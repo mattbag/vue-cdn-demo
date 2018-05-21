@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue Designer</title>
+    <link rel="icon" href="http://cultofthepartyparrot.com/parrots/hd/parrotmustache.gif" type="image/gif">
+
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css"> -->
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        [v-cloak] {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-dark" style="padding: .25rem;">
+        <div class="container">
+
+            <header class="navbar">
+                <section class="navbar-section">
+                    <div class="columns">
+                        <div class="column">
+                            <a href="#" class="text-secondary">Docs</a>
+                        </div>
+                        <div class="column">
+                            <a href="#" class="text-secondary">Examples</a>
+                        </div>
+                    </div>
+                </section>
+                <section class="navbar-center">
+                    <a href="index.html" style="padding: .3rem .2rem 0 .2rem">
+                        <img src="http://cultofthepartyparrot.com/parrots/hd/parrotmustache.gif" alt="logo" width="50">
+                    </a>
+                </section>
+                <section class="navbar-section">
+                    <div class="columns">
+                        <div class="column">
+                            <a href="#" class="text-secondary">Twitter</a>
+                        </div>
+                        <div class="column">
+                            <a href="#" class="text-secondary">GitHub</a>
+                        </div>
+                    </div>
+                </section>
+            </header>
+
+        </div>
+    </div>
+
+    <main>
+        <div id="vdx" v-cloak style="padding: 1rem 0;">
+            <div class="container">
+                <div class="columns">
+                    <div class="column col-xl-6">
+                        <div v-show="true">
+                            <!-- <pre class="code" data-lang="isActive"><code>{{isActive}}</code></pre> -->
+                            <!-- <pre class="code" data-lang="images"><code>{{layers.images}}</code></pre> -->
+                            <pre class="code" data-lang="all"><code>{{allImages}}</code></pre>
+                            <pre class="code" data-lang="all"><code>{{allText}}</code></pre>
+                        </div>
+                        <br>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="form-group">
+                                    <label for="">Font</label>
+                                    <select class="form-select">
+                                        <option>Choose an option</option>
+                                        <option>Slack</option>
+                                        <option>Skype</option>
+                                        <option>Hipchat</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="form-group">
+                                    <label for="">Colour</label>
+                                    <input type="color" class="form-input">
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="form-group">
+                                    <label for="">Size</label>
+                                    <input type="number" class="form-input">
+                                </div>
+                            </div>
+                            <div class="column col-12">
+                                <!-- form textarea control -->
+                                <div class="form-group">
+                                    <label class="form-label" for="input-example-3">Text</label>
+                                    <textarea class="form-input" id="input-example-3" rows="4"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column col-xl-6">
+
+                        <canvas id="c" style="border: 1px solid #333;"></canvas>
+                        <br>
+                        <button class="btn btn-secondary" @click="addImg('./img/logo.png','filename')">add image</button>
+                        <button class="btn btn-secondary" @click="addText('weeee')">add text</button>
+                        <br>
+                        <br>
+<ul>
+    <li v-for="l in allImages">{{l.name}} : {{l.id}}</li>
+</ul>
+<ul>
+    <li v-for="tt in allText">{{tt.text}} : {{tt.id}}</li>
+</ul>
+                        <div class="chip c-hand" style="border: 1px dashed" :style="{'border-color': i.isSelected ? '#444':'transparent'}" @click.prevent="select(i)"
+                            v-for="i in layers.images">
+                            <img :src="i._element.src" class="avatar avatar-smO bg-gray">
+                            <span>
+                                {{i._element.name}}
+                            </span>
+                            <a @click.prevent.stop="removeFromCanvas(i)" class="btn btn-clear" aria-label="Close" role="button"></a>
+                        </div>
+                        <!--  -->
+                        <!-- <vdx-chip v-for="i in layers.images" v-bind:item="{name: i._element.name, src: i._element.src}"></vdx-chip> -->
+                        <!--  -->
+                        <br>
+                        <br>
+
+                        <div class="chip c-hand" style="border: 1px dashed" :style="t.isSelected ? 'border-color: #444':'border-color: transparent'"
+                            @click.prevent="select(t)" v-for="t in layers.text">
+                            <span>
+                                {{t.text}}
+                            </span>
+                            <a @click.prevent.stop="removeFromCanvas(t)" class="btn btn-clear" aria-label="Close" role="button"></a>
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+            </div>
+        </div>
+    </main>
+
+    <br>
+    <footer class="bg-dark" style="padding:1rem">
+        <a href="http://fabricjs.com/" target="_blank" class="text-secondary">vuestore.io</a>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/2.2.4/fabric.js"></script>
+    <!-- <script src="./js/fabric.controls.js"></script> -->
+    <!-- <script type="text/x-template" id="vdx-chip-template">
+        <div>My component template</div>
+
+      </script> -->
+    <script>
+        // https://github.com/pixolith/fabricjs-customise-controls-extension
+        // fabric.Canvas.prototype.customiseControls({
+        //     // tl: {
+        //     //     action: 'rotate',
+        //     //     cursor: './img/logo.png'
+        //     // },
+        //     mr: {
+        //         action: 'scale',
+        //         cursor:'zoom-in'
+        //     },
+        //     bl: {
+        //         action: 'remove',
+        //         cursor: 'pointer'
+        //     },
+        //     // br: {
+        //     //     action: 'moveUp',
+        //     //     cursor: 'pointer'
+        //     // },
+        //     mb: {
+        //         action: 'moveDown',
+        //         cursor: 's-resize'
+        //     },
+        //     ml: {
+        //         action: 'moveUp',
+        //         cursor: 'n-resize'
+        //     },
+        //     mt: {
+        //         action: {
+        //             'rotateByDegrees': 45
+        //         }
+        //     }
+        // }, function () {
+        //     canvas.renderAll();
+        // });
+        // 
+        // ========================================
+        // components
+        // var VdxChip = Vue.component('vdx-chip', {
+        //     props: ['item'],
+        //     template: '<div>{item.name}}</div>'
+        // })
+        // var VdxChip = {
+        //     props: ['item'],
+        //     template: '#vdx-chip-template'
+        // }
+
+        // =====
+        // https://jsfiddle.net/n5osgpkg/
+
+        var app = new Vue({
+            el: '#vdx',
+            data: {
+                canvas: null,
+                // images: [],
+                layers: {
+                    images: [],
+                    text: [],
+                },
+                objects: null,
+                config: {
+                    overlay: './img/logo.png',
+                    bg: './img/over.jpg',
+                },
+            },
+            computed: {
+                isActive: function () {
+                    // console.log('------------------------------------');
+                    // console.log(this.canvas.getActiveObject());
+                    // console.log('------------------------------------');
+                    return this.canvas && this.canvas.getActiveObject();
+                },
+                allLayers: function(){
+                    return this.canvas && this.canvas.getObjects()
+                },
+                allImages: function(){
+                    return this.canvas && this.canvas.getObjects().filter(function(i){
+                       return i.type === 'image'
+                    })
+                },
+                allText: function(){
+                    return this.canvas && this.canvas.getObjects().filter(function(i){
+                       return i.type === 'text'
+                    })
+                },
+
+            },
+            methods: {
+                addToCanvas: function (obj) {
+                    this.canvas.centerObject(obj);
+                    this.canvas.add(obj);
+                    this.canvas.setActiveObject(obj);
+                    obj.isSelected = true;
+                    // this.images.push(obj);
+                    // debugger;
+                },
+                handleThumb: function (what) {
+                    what.isSelected = !what.isSelected;
+                    // this.canvas.renderAll();
+                },
+                select: function (what) {
+                    this.canvas.setActiveObject(what);
+                    this.canvas.renderAll();
+                    // this.handleThumb(what);
+                    what.isSelected = true;
+                    // debugger;
+                },
+                removeFromCanvas: function (what) {
+                    this.canvas.setActiveObject(what);
+
+                    this.canvas.remove(what);
+                    var textORimage = what.hasOwnProperty('text') ? 'text' : 'images';
+
+                    // debugger;
+                    var where = this.layers[textORimage].indexOf(what);
+                    //    debugger;
+                    this.layers[textORimage].splice(where, 1);
+                },
+                addImg: function (url, name) {
+                    var _this = this;
+                    var _id = _this.genID();
+
+                    fabric.Image.fromURL(url, function (img) {
+                        img.set({
+                            originX: 'center',
+                            originY: 'center',
+                        });
+
+                        img.id = _id;
+                        img.name = name;
+                        img._element.id = _id;
+                        img._element.name = name;
+// debugger;
+                        if (name === 'overlay') {
+                            _this.overlay = img;
+                            img.id += 'overlay';
+                            _this.overlay.selectable = false;
+                            _this.overlay.evented = false;
+                            // self.deselectActiveObject();
+                            _this.canvas.selectedObject = false;
+                            
+                            _this.canvas.centerObject(img);
+                            _this.canvas.add(img);
+                            img.moveTo(20);
+                            // fabric.render();
+                            _this.canvas.controlsAboveOverlay = true;
+                        } else if (name === 'bg') {
+                            img.id += 'bg';
+                            _this.bg = img;
+                            _this.canvas.centerObject(img);
+                            _this.canvas.setBackgroundImage(img, null, {
+                                scaleX: _this.canvas.width / img.width,
+                                scaleY: _this.canvas.height / img.height
+                            });
+                        }
+                        else {
+                            _this.scale_to_fit(img);
+                            _this.layers.images.push(img);
+                            // debugger;
+                            _this.addToCanvas(img);
+                            _this.canvas.sendToBack(img);
+                        }
+
+                    });
+                },
+
+                addText: function (txt) {
+                    var _id = this.genID();
+                    var _text = new fabric.Text(txt, {
+                        color: '#333',
+                        stroke: '#ff1318',
+                        strokeWidth: 1,
+                        // uuid: _id,
+                        // text: txt
+                    });
+                    _text.id = _id;
+                    this.addToCanvas(_text);
+                    // this.layers.text.push(_text);
+                    // debugger;
+                },
+                // utils
+                scale_to_fit: function (_obj) {
+                    // var _this = this;
+                    var _c = this.canvas;
+                    // console.log(_obj);
+                    var ih = _obj._originalElement.naturalHeight;
+                    var iw = _obj._originalElement.naturalWidth;
+
+                    var width_ratio = _c.width / iw;
+                    var height_ratio = _c.height / ih;
+
+                    if (ih > _c.height || iw > _c.width) {
+                        // console.log('time to scale');
+                        if (width_ratio > height_ratio) {
+                            _obj.scaleToHeight(_c.height * .9);
+                        } else {
+                            _obj.scaleToWidth(_c.width * .9);
+                        }
+                    } // end if image scaling out of canvas
+
+                },
+
+                genID: function () {
+                    return Math.floor(Math.random() * 10000);
+                },
+                init: function () {
+                    // debugger;
+                    this.canvas = new fabric.Canvas('c', {
+                        width: 600,
+                        height: 600,
+                        backgroundColor: '',
+                        // selectionColor: 'red',
+                        selectionLineWidth: 2,
+                        imageDefaults: {
+                            crossOrigin: 'Anonymous'
+                        },
+                    });
+
+                    if (this.config.overlay != '') {
+                        this.addImg(this.config.overlay, 'overlay')
+                    }
+                    if (this.config.bg != '') {
+                        this.addImg(this.config.bg, 'bg')
+                    }
+
+                },
+                canvasEvents: function () {
+                    var _ = this;
+
+                    this.canvas.on('object:selected', function (e) {
+                        // console.log('------------------------------------');
+                        // console.log(e);
+                        // console.log('------------------------------------');
+
+                        // console.log(_.canvas.getActiveObject());
+                        // console.log(_.layers);
+                        // _.layers.images.forEach(function (img, i) {
+                        //     // console.log('------------------------------------');
+                        //     // console.log(i);
+                        //     // console.log('------------------------------------');
+                        //     _.handleThumb(i);
+                        // })
+                        _.handleThumb(_.canvas.getActiveObject());
+                        // debugger;
+                    })
+
+                    // this.canvas.on('object:deselected', function (e) {
+                    //     console.log('------------------------------------');
+                    //     // console.log(e);
+                    //     // console.log('------------------------------------');
+
+                    //     _.handleThumb(_.canvas.getActiveObject());
+                    // })
+
+                    this.canvas.on('selection:cleared', function (e) {
+
+                        // console.log(e);
+
+                        e.deselected.forEach(function (el) {
+                            // _.handleThumb(el);
+                            el.isSelected = false;
+                            // debugger;
+                            // console.log('------------------------------------');
+                            // console.log('------------------------------------');
+                        })
+                        // _.canvas.getObjects().forEach(function (el) {
+                        //     console.log(el);
+
+                        // })
+                        // debugger;
+                    })
+                }
+
+            },
+            mounted: function () {
+                this.init()
+                this.canvasEvents()
+            },
+            // components: {
+            //     'vdx-chip': VdxChip
+            // }
+        })
+
+    </script>
+</body>
+
+</html>

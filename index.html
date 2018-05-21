@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue Multi-step Checkout</title>
+    <link rel="icon" href="http://cultofthepartyparrot.com/parrots/hd/parrotmustache.gif" type="image/gif">
+
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        [v-cloak] {
+            opacity: 0;
+        }
+
+        .step-fade-enter-active,
+        .step-fade-leave-active {
+            transition: opacity 300ms ease-out;
+        }
+
+        .step-fade-enter,
+        .step-fade-leave-to {
+            opacity: 0;
+            /* display: none; */
+        }
+
+        .bounce-enter-active {
+            transform-origin: bottom right;
+            animation: bounce-in 300ms;
+        }
+
+        .bounce-leave-active {
+            transform-origin: bottom right;
+            animation: bounce-in 300ms reverse;
+        }
+
+        @keyframes bounce-in {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.3);
+            }
+            55% {
+                transform: scale(1.2);
+            }
+            60% {
+                transform: scale(1.3);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-dark" style="padding: .25rem;">
+        <div class="container">
+
+            <header class="navbar">
+                <section class="navbar-section">
+                    <div class="columns">
+                        <div class="column">
+                            <a href="#" class="text-secondary">Docs</a>
+                        </div>
+                        <div class="column">
+                            <a href="#" class="text-secondary">Examples</a>
+                        </div>
+                    </div>
+                </section>
+                <section class="navbar-center">
+                    <a href="index.html" style="padding: .3rem .2rem 0 .2rem">
+                        <!-- <img src="./img/logo.png" alt="logo" width="50"> -->
+                        <img src="http://cultofthepartyparrot.com/parrots/hd/parrotmustache.gif" alt="logo" width="50">
+                    </a>
+                </section>
+                <section class="navbar-section">
+                    <div class="columns">
+                        <div class="column">
+                            <a href="#" class="text-secondary">Twitter</a>
+                        </div>
+                        <div class="column">
+                            <a href="#" class="text-secondary">GitHub</a>
+                        </div>
+                    </div>
+                </section>
+            </header>
+
+        </div>
+    </div>
+
+
+    <main>
+        <div class="container grid-lg">
+
+            <div class="columns">
+                <div class="column">
+                    <!-- start vue -->
+                    <div id="vue-checkout" v-cloak>
+                        <br>
+                        <div class="btn-group btn-group-block">
+                            <button @click="goStep(step.order)" class="btn" :disabled="!step.clickable || !step.complete" :class="[step.order == currentStep ? 'btn-primary':'']"
+                                v-for="step in settings.steps">Step: {{step.order}} - {{step.name}}
+                                <i v-show="step.complete" class="icon icon-check text-success"></i>
+                            </button>
+                        </div>
+                        <br>
+                        <h2 v-show="currentStep < 4">Step: {{currentStep}} - {{settings.steps[currentStep - 1] && settings.steps[currentStep - 1].name}}</h2>
+
+                        <transition name="step-fade" mode="out-in">
+                            <!-- step1 -->
+                            <div v-if="currentStep === 1" key="1">
+                                <form action="" @submit.prevent="validateBeforeSubmit">
+                                    <div class="columns">
+                                        <div class="column col-xs-12 col-md-8 col-6">
+
+                                            <div class="form-group" :class="{'has-error': errors.has('fullname') }">
+                                                <label for="">Full Name</label>
+                                                <input class="form-input" type="text" name="fullname" v-model="user.fullname" v-validate="'required|alpha_spaces|min:3'">
+                                            </div>
+                                            <span v-show="errors.has('fullname')" class="text-warning" style="display:none">{{ errors.first('fullname') }}</span>
+                                            <br>
+                                            <div class="form-group" :class="{'has-error': errors.has('email') }">
+
+                                                <label for="">Email</label>
+                                                <input class="form-input" type="text" name="email" v-model="user.email" v-validate="'required|email'">
+                                            </div>
+                                            <span v-show="errors.has('email')" class="hide text-warning" style="display:none">{{ errors.first('email') }}</span>
+                                            <br>
+
+                                            <div class="form-group" :class="{'has-error': errors.has('password') }">
+                                                <label class="form-label" for="input-password">Password</label>
+                                                <input v-validate="'required|min:8'" v-model.lazy="user.password" name="password" class="form-input" type="password" id="input-password"
+                                                    placeholder="Create Password">
+                                                <p class="form-input-hint" v-show="errors.has('password')" style="display:none">Passwords must have at least 8 characters.</p>
+                                            </div>
+                                            <!-- <br> -->
+                                            <div class="form-group" :class="{'has-error': errors.has('password_confirm') }">
+                                                <label class="form-label" for="input-password-confirm">Confirm Password</label>
+                                                <input v-validate="{is: user.password }" name="password_confirm" v-model.lazy="user.password_confirm" class="form-input"
+                                                    required type="password" id="input-password-confirm" placeholder="Confirm Password">
+                                                <span class="form-input-hint" v-show="errors.has('password_confirm')" style="display:none">Passwords must match.</span>
+                                            </div>
+                                            <br>
+                                            <label for="">Store Url</label>
+                                            <div class="input-group">
+                                                <!-- <br> -->
+                                                <div class="has-icon-right" style="width: 100%">
+                                                    <input @input="checkStoreName" type="text" class="form-input" required placeholder="yourstorename" v-model.lazy="user.store.store_name">
+                                                    <i v-show="user.store.store_name.length>2 && !settings.store.store_name_valid" class="form-icon loading"></i>
+                                                    <i v-show="settings.store.store_name_valid" class="form-icon icon icon-check text-success"></i>
+                                                </div>
+
+                                                <span class="input-group-addon">.vuestore.io</span>
+                                            </div>
+                                            <br>
+                                            <div class="form-group" :class="{'has-error': errors.has('store_country') }">
+                                                <label for="">Store Country</label>
+                                                <select class="form-select" name="store_country" v-validate="'required'" v-model="user.store.store_country">
+                                                    <option value="">Choose a country</option>
+                                                    <option :value="c" v-for="c in settings.countries">{{c}}</option>
+                                                </select>
+                                                <span class="text-error" v-show="errors.has('store_country')" style="display: none">
+                                                    <br>{{ errors.first('store_country') }}</span>
+                                            </div>
+                                            <br>
+                                            <div class="form-group" :class="{'has-error': errors.has('terms') }">
+                                                <label class="form-switch">
+                                                    <input type="checkbox" name="terms" v-model="user.terms_agreed" v-validate="'required'">
+                                                    <i class="form-icon"></i> I agree with
+                                                    <a href="">Terms & Conditions</a>
+                                                </label>
+                                                <span class="text-error" v-show="errors.has('terms')" style="display: none">
+                                                    <br>{{ errors.first('terms') }}</span>
+                                            </div>
+                                            <br>
+
+                                            <div class="popover popover-top">
+
+                                                <button type="submit" :disabled="errors.items.length > 0" class="btn btn-primary">Create</button>
+
+                                                <div class="popover-container bg-warning" style="padding:.25rem" v-show="errors.items.length > 0">
+                                                    <ul>
+                                                        <li v-for="err in errors.items">{{err.msg}}</li>
+                                                    </ul>
+                                                    <!-- <code>
+                                                          {{errors}}
+                                                      </code> -->
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- </transition> -->
+                            <!-- end step 1 -->
+
+                            <!-- <transition name="step" mode="out-in"> -->
+                            <div v-if="currentStep === 2" key="2">
+                                <form action="" @submit.prevent="validateBeforeSubmit">
+                                    <!-- form radio control -->
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <h3>Subscription Plan</h3>
+                                        </label>
+                                        <label class="form-radio">
+                                            <input type="radio" name="gender" value="monthly" v-model="user.store.plan.interval">
+                                            <i class="form-icon"></i> Monthly
+                                        </label>
+                                        <label class="form-radio">
+                                            <input type="radio" name="gender" value="yearly" v-model="user.store.plan.interval">
+                                            <i class="form-icon"></i> Yearly
+                                        </label>
+                                    </div>
+
+                                    <br>
+                                    <h3>Plan Type</h3>
+                                    <div class="columns">
+
+                                        <div class="column text-center" v-for="type in settings.store.plan.types">
+                                            <dl @click="user.store.plan.type = type.name" :class="user.store.plan.type == type.name ? 'bg-secondary' : ''" style="cursor:pointer;padding:1rem; border: 1px solid #ddd">
+                                                <dd>
+                                                    <h3>{{type.name}}</h3>
+                                                </dd>
+                                                <dt>{{type.subtitle}}</dt>
+                                                <dd>{{type.fees[user.store.plan.interval] * (user.store.plan.interval == 'monthly'
+                                                    ? 1 : 12)}} / {{user.store.plan.interval}}</dd>
+                                                <dd>{{type.setup}}$ Setup Fee</dd>
+                                                <dd>+{{type.gst}}% GST</dd>
+                                                <!-- <dd>description list description</dd> -->
+                                            </dl>
+                                        </div>
+                                        <!-- <div class="divider-vert" data-content="OR"></div> -->
+                                    </div>
+                                    <br>
+                                    <h4>Total: {{getTotal}} / {{user.store.plan.interval}} + {{settings.store.plan.setup}}$ Setup
+                                        Fee
+                                    </h4>
+                                    <br>
+                                    <button class="btn btn-success btn-lg">Go to Payment</button>
+                                </form>
+                            </div>
+                            <!-- </transition> -->
+                            <!-- step 3 -->
+                            <!-- <transition name="step" mode="out-in"> -->
+                            <div v-if="currentStep === 3" key="3">
+                                <!-- <h2>Total: {{getTotal}} / {{user.store.plan.interval}} </h2> -->
+                                <br>
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Plan total</th>
+                                            <th>Setup Fee</th>
+                                            <th>Total (inc. GST)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="active">
+                                            <td>{{getTotal}} / {{user.store.plan.interval}}</td>
+                                            <td>{{settings.store.plan.setup}}$</td>
+                                            <td>
+                                                <strong>
+                                                    {{((getTotal + settings.store.plan.setup) * (settings.store.plan.gst / 100 + 1)).toFixed(2)}}
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br>
+                                <br>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <h3>Payment Method</h3>
+                                    </label>
+
+                                    <label class="form-radio" v-for="method in settings.store.payments">
+                                        <input type="radio" @change="resetCard" :name="method.method" :checked="user.store.payment.method" :value="method.method"
+                                            v-model="user.store.payment.method">
+                                        <i class="form-icon"></i> {{method.method}}
+                                    </label>
+                                </div>
+                                <div v-if="user.store.payment.method == 'credit card'">
+                                    <form action="" @submit.prevent="validateBeforeSubmit">
+
+                                        <div class="columns">
+                                            <div class="column col-xs-12 col-md-8 col-6">
+
+                                                <div class="form-group" :class="{'has-error': errors.has('credit_card_name') }">
+                                                    <label for="">Credit Card Name</label>
+                                                    <input class="form-input" type="text" name="credit_card_name" v-model="user.store.payment.card.name" v-validate="'required|alpha_spaces|min:3'">
+                                                </div>
+                                                <span class="text-warning">{{ errors.first('credit_card_name') }}</span>
+
+                                                <div class="form-group" :class="{'has-error': errors.has('credit_card_number') }">
+                                                    <label for="">Credit Card Number (16 Digits, no space)</label>
+                                                    <input class="form-input" type="number" name="credit_card_number" v-model.lazy="user.store.payment.card.number" v-validate="'required|credit_card'">
+                                                </div>
+
+
+                                                <div class="columns">
+                                                    <div class="column">
+                                                        <div class="input-group" :class="{'has-error': errors.has('credit_card_cvv') }">
+                                                            <span class="input-group-addon">CVV</span>
+                                                            <input name="credit_card_cvv" v-validate="{required:true,digits:3}" type="text" class="form-input" placeholder="666" v-model="user.store.payment.card.cvv">
+                                                        </div>
+                                                    </div>
+                                                    <div class="column">
+                                                        <div class="input-group" :class="{'has-error': errors.has('cc_exp_month') }">
+                                                            <span class="input-group-addon">Exp Month</span>
+                                                            <input type="number" name="cc_exp_month" v-validate="{required:true,digits:2,min_value:1,max_value:12}" class="form-input"
+                                                                :value="user.store.payment.card.expiry_month" v-model="user.store.payment.card.expiry_month"
+                                                                placeholder="12">
+                                                        </div>
+                                                    </div>
+                                                    <div class="column">
+                                                        <div class="input-group" :class="{'has-error': errors.has('cc_exp_year') }">
+                                                            <span class="input-group-addon">Exp Year</span>
+                                                            <input type="number" name="cc_exp_year" class="form-input" v-validate="{required:true,digits:2,min_value:19,max_value:30}"
+                                                                :value="user.store.payment.card.expiry_year" v-model="user.store.payment.card.expiry_year"
+                                                                placeholder="22">
+                                                        </div>
+                                                    </div>
+                                                    <div class="column col-12">
+                                                        <br>
+                                                        <span class="text-warning" v-show="errors.has('credit_card_number')">{{ errors.first('credit_card_number') }}
+                                                            <br>
+                                                        </span>
+                                                        <span v-show="errors.first('credit_card_cvv')" class="text-warning">{{ errors.first('credit_card_cvv') }}
+                                                            <br>
+                                                        </span>
+                                                        <span v-show="errors.first('cc_exp_month')" class="text-warning">{{ errors.first('cc_exp_month') }}
+                                                            <br>
+                                                        </span>
+                                                        <span v-show="errors.first('cc_exp_year')" class="text-warning">{{ errors.first('cc_exp_year') }}
+                                                            <br>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <br>
+
+                                                <div class="popover popover-top" style="width:100%">
+                                                    <button type="submit" class="btn btn-success btn-lg" :disabled="errors.items.length > 0" style="width:100%">Confirm Payment</button>
+
+
+                                                    <div class="popover-container bg-warning" style="padding:.25rem" v-show="errors.items.length > 0">
+                                                        <ul>
+                                                            <li v-for="err in errors.items">{{err.msg}}</li>
+                                                        </ul>
+                                                        <!-- <code>
+                                                                  {{errors}}
+                                                              </code> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div v-if="user.store.payment.method == 'paypal'">
+                                    paypal
+                                </div>
+                                <div v-if="user.store.payment.method == 'stripe'">
+                                    stripe
+                                </div>
+
+                            </div>
+                            <!-- end step 3 -->
+                            <!-- </transition> -->
+                            <!-- </form> -->
+                            <!-- end form -->
+
+                            <!-- <transition name="step"> -->
+                            <!-- step 4 -->
+                            <div v-if="currentStep === 4" key="4">
+                                <div class="empty" v-if="currentStep == 4 && !loading">
+                                    <div class="empty-icon">
+                                        <i class="icon icon-4x icon-check text-success"></i>
+                                    </div>
+                                    <p class="empty-title h5">Your store has been created!</p>
+                                    <p class="empty-subtitle">Click the button and start managing.</p>
+                                    <div class="empty-action">
+                                        <a :href="'https://' + user.store.store_name + '.vuestore.io'" class="btn btn-primary btn-lg">Go to your store</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end step 4 -->
+
+                        </transition>
+
+                        <transition name="modal">
+                            <div class="modal modal-sm" :class="loading? 'active': ''">
+                                <a href="#close" class="modal-overlay" aria-label="Close"></a>
+                                <div class="modal-container" style="padding: 2rem 1rem;">
+                                    <!-- modal structure here -->
+                                    <!-- <div class="loading loading-lg"></div> -->
+                                    <h3 class="text-center text-uppercase">Processing Payment</h3>
+                                    <progress class="progress" max="100"></progress>
+                                </div>
+                            </div>
+                        </transition>
+
+                        <transition name="bounce">
+                            <div v-show="json" style="position: absolute; bottom:.2rem;right:.2rem; opacity:0.8; pointer-events: none">
+                                <pre class="code" data-lang="JSON"><code>user: {{user}}</code></pre>
+                            </div>
+                        </transition>
+
+                        <!-- <button class="btn" @click="json = !json">Check JSON</button> -->
+                        <figure class="avatar avatar-lg c-hand" @click="json = !json" data-initial="JSON" style="font-size:.7rem;background-color: #5755d9;position: absolute; bottom:.5rem;right:.5rem;">
+                            <i class="avatar-presence online" :class="json ? 'online': 'busy'"></i>
+                        </figure>
+                    </div>
+                    <!-- end vue -->
+                </div>
+            </div>
+        </div>
+    </main>
+    <br>
+    <footer class="bg-dark" style="padding:1rem">
+        <a href="" class="text-secondary">vuestore.io</a>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://unpkg.com/vee-validate@latest"></script>
+
+    <script src="./vue/checkout.vue.js"></script>
+</body>
+
+</html>
