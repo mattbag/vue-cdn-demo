@@ -215,13 +215,22 @@
             },
             methods: {
                 addToCanvas: function (obj) {
+                    var _ = this;
+                    obj.on('selected', function() {
+                        console.log(' sel ', this);
+                        _.active = this;
+                    });
+                    obj.on('deselected', function() {
+                        console.log(' desel', this);
+                        _.active = null;
+                    });
                     this.canvas.centerObject(obj);
                     this.canvas.add(obj);
                     this.canvas.setActiveObject(obj);
                     // obj.isSelected = true;
                     // this.images.push(obj);
                     // debugger;
-                    this.active = obj;
+                    // this.active = obj;
                 },
                 // handleThumb: function (what) {
                 //     what.isSelected = !what.isSelected;
@@ -309,8 +318,16 @@
                         // text: txt
                     });
                     _text.id = _id;
+                    // _text.on('selected', function() {
+                    //     console.log(this);
+                    //     _.active = this;
+                    // });
+                    // _text.on('deselected', function() {
+                    //     console.log(this);
+                    //     _.active = null;
+                    // });
                     this.addToCanvas(_text);
-                    console.log(_text);
+                    // console.log(_text);
                     // debugger;
                 },
                 // utils
@@ -362,38 +379,28 @@
                 canvasEvents: function () {
                     var _ = this;
 
-                    this.canvas.on('object:selected', function (e) {
-                        // console.log('------------------------------------');
-                        // console.log(e);
-                        // console.log('------------------------------------');
-
-                        // console.log(_.canvas.getActiveObject());
-                        // console.log(_.layers);
-                        _.canvas.getObjects().forEach(function (img, i) {
-                            // console.log('------------------------------------');
-                            // console.log(i);
-                            // console.log('------------------------------------');
-                            i.isSelected = false;
-                        });
-                        // var act = _.canvas.getActiveObject()
-                        _.active = _.canvas.getActiveObject();
-                        // _.active.isSelected = true;
-                        // _.handleThumb(_.canvas.getActiveObject());
-                        // debugger;
-                    })
+                    // this.canvas.on('object:selected', function (e) {
+                    //     console.log('--------------sel---------------');
+                      
+                    //     _.active = _.canvas.getActiveObject();
+                    //     // _.active.isSelected = true;
+                    //     // _.handleThumb(_.canvas.getActiveObject());
+                    //     // debugger;
+                    // })
 
                     // this.canvas.on('object:added', function () {
                     //     _.active = _.canvas.getActiveObject();
                     //     debugger
                     // });
 
-                    this.canvas.on('object:deselected', function (e) {
-                        console.log('------------------------------------');
-                        // console.log(e);
-                        // console.log('------------------------------------');
+                    // this.canvas.on('object:deselected', function (e) {
+                    //     console.log('-----------------des-----------');
+                    //     _.active = null;
+                    //     // console.log(e);
+                    //     // console.log('------------------------------------');
 
-                        // _.handleThumb(_.canvas.getActiveObject());
-                    })
+                    //     // _.handleThumb(_.canvas.getActiveObject());
+                    // })
 
                     // this.canvas.on('selection:cleared', function (e) {
 
