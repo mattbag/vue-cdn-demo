@@ -1,9 +1,11 @@
 Vue.use(VeeValidate);
 
 var checkout = new Vue({
-    el: '#vue-checkout',
+    el: '#vue-quiz',
     data: {
         json: true,
+        debug: true,
+        debugItem: '',
         currentStep: 3,
         loading: false,
         user: {
@@ -93,19 +95,19 @@ var checkout = new Vue({
                             error: false,
                             options: [
                                 {
-                                    text: 'option 1',
+                                    text: 'option 11',
                                     correct: false
                                 },
                                 {
-                                    text: 'option 2',
+                                    text: 'option 12',
                                     correct: false
                                 },
                                 {
-                                    text: 'option 3',
+                                    text: 'option 13',
                                     correct: true
                                 },
                                 {
-                                    text: 'option 4',
+                                    text: 'option 14',
                                     correct: false
                                 }
                             ]
@@ -114,19 +116,19 @@ var checkout = new Vue({
                             title: 'question title 2',
                             options: [
                                 {
-                                    text: 'option 1',
+                                    text: 'option 21',
                                     correct: false
                                 },
                                 {
-                                    text: 'option 2',
+                                    text: 'option 22',
                                     correct: false
                                 },
                                 {
-                                    text: 'option 3',
+                                    text: 'option 23',
                                     correct: false
                                 },
                                 {
-                                    text: 'option 4',
+                                    text: 'option 24',
                                     correct: true
                                 }
                             ]
@@ -176,13 +178,14 @@ var checkout = new Vue({
             this.user.quiz[0].answers.forEach(function (answer, aIndex) {
 
                 var q = _.settings.quiz[0].questions[aIndex];
-                debugger;
+                // debugger;
                 var options = q.options;
 
                 console.log(options[answer].text + ' is:');
 
                 if (options[answer].correct) {
                     // debugger
+                    console.log('correct at index: ' + answer);
                     q.error = false;
                     // return
                 } else {
@@ -265,7 +268,21 @@ var checkout = new Vue({
             return q.length == this.settings.quiz[0].questions.length;
         },
 
+        debugItemComp:function(){
+            if( this.debugItem){
+                return this[this.debugItem]
+            }
+        }
 
-    }
+
+    },
+    // directives: {
+    //     debugg: {
+    //       // directive definition
+    //       bind: function (el) {
+    //         el.focus()
+    //       }
+    //     }
+    //   }
 })
 

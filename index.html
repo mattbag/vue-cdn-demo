@@ -57,7 +57,7 @@
             <div class="columns">
                 <div class="column">
                     <!-- start vue -->
-                    <div id="vue-checkout" v-cloak>
+                    <div id="vue-quiz" v-cloak>
                         <br>
                         <br>
 
@@ -215,7 +215,7 @@
                             <!-- step 3 -->
 
                             <div v-if="currentStep === 3" key="3">
-                                <h2>Quiz title <u>{{user.quiz[0].done ? 'done': 'not done'}}</u></h2>
+                                <h2>Quiz title <u v-show="json">{{user.quiz[0].done ? 'done': 'not done'}}</u></h2>
                                 <br>
                                 <!-- start questions -->
 
@@ -224,10 +224,10 @@
                                 <div class="form-group" v-for="(q,qIndex) in settings.quiz[0].questions" :class="settings.quiz[0].questions[qIndex].error ? 'has-error has-error-border': ''">
                                     <label class="form-label">
                                         <h4>{{qIndex + 1}}. {{q.title}}</h4>
-                                        <p>i: {{qIndex}} - a: {{ user.quiz[0].answers[qIndex] }}</p>
+                                        <p v-if="json">i: {{qIndex}} - a: {{ user.quiz[0].answers[qIndex] }}</p>
                                     </label>
                                     <div v-for="(o,index) in q.options">
-                                        <label class="form-radio" :style="o.correct ? 'border: 1px solid green':''">
+                                        <label class="form-radio" :style="o.correct && json ? 'border: 1px solid green':''">
                                             <input type="radio" v-validate="'required'" :name="q.title" v-model="user.quiz[0].answers[qIndex]" :value="index" @change="setAnswer(index,qIndex)">
                                             <i class="form-icon"></i> {{o.text}}
                                         </label>
@@ -243,40 +243,26 @@
                                 <button v-if="user.quiz[0].done" class="btn btn-secondary" @click="quizReset">Re-take the quiz</button>
                                 <button v-if="user.quiz[0].done" class="btn btn-warning" @click="">Move on</button>
 
-                                <!-- <p v-if="allAnswer">true</p> -->
                                 </form>
                             </div>
                             <!-- end step 3 -->
 
-
-                         
-
                         </transition>
 
-                        <transition name="modal">
-                            <div class="modal modal-sm" :class="loading? 'active': ''">
-                                <a href="#close" class="modal-overlay" aria-label="Close"></a>
-                                <div class="modal-container" style="padding: 2rem 1rem;">
-                                    <!-- modal structure here -->
-                                    <!-- <div class="loading loading-lg"></div> -->
-                                    <h3 class="text-center text-uppercase">Processing Payment</h3>
-                                    <progress class="progress" max="100"></progress>
-                                </div>
-                            </div>
-                        </transition>
 
                         <transition name="bounce">
-                            <div v-show="json" style="position: absolute; bottom:.2rem;right:.2rem; opacity:0.8; pointer-events: none">
-                                <pre class="code" data-lang="JSON"><code>user: {{user}}</code></pre>
+                            <div v-show="json" style="z-index:99;position: absolute; bottom:.2rem;right:.2rem; opacity:0.8">
+                                    <input type="text" :value="debugItem" v-model.lazy="debugItem"/>
+                                <pre class="code" data-lang="JSON"><code>item: {{debugItemComp}}</code></pre>
                             </div>
                         </transition>
+                        
 
-                        <!-- <button class="btn" @click="json = !json">Check JSON</button> -->
-                        <figure class="avatar avatar-lg c-hand" @click="json = !json" data-initial="JSON" style="font-size:.7rem;background-color: #5755d9;position: absolute; bottom:.5rem;right:.5rem;">
+                        <figure class="avatar avatar-lg c-hand" @click="json = !json" data-initial="JSON" style="z-index:99;font-size:.7rem;background-color: #5755d9;position: absolute; bottom:.5rem;right:.5rem;">
                             <i class="avatar-presence online" :class="json ? 'online': 'busy'"></i>
                         </figure>
                     </div>
-                    <!-- end vue -->
+                    <!-- end #vue -->
                 </div>
             </div>
         </div>
@@ -285,11 +271,12 @@
     <footer class="bg-dark" style="padding:1rem">
         <a href="" class="text-secondary">vuestore.io</a>
     </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://unpkg.com/vee-validate@latest"></script>
 
     <script src="./vue/quiz.vue.js"></script>
-    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,Promise"></script>
+    <!-- <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,Promise"></script> -->
 </body>
 
 </html>
