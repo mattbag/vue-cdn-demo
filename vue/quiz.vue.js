@@ -110,27 +110,27 @@ var checkout = new Vue({
                                 }
                             ]
                         },
-                        // {
-                        //     title: 'question title 2',
-                        //     options: [
-                        //         {
-                        //             text: 'option 1',
-                        //             correct: false
-                        //         },
-                        //         {
-                        //             text: 'option 2',
-                        //             correct: false
-                        //         },
-                        //         {
-                        //             text: 'option 3',
-                        //             correct: false
-                        //         },
-                        //         {
-                        //             text: 'option 4',
-                        //             correct: true
-                        //         }
-                        //     ]
-                        // }
+                        {
+                            title: 'question title 2',
+                            options: [
+                                {
+                                    text: 'option 1',
+                                    correct: false
+                                },
+                                {
+                                    text: 'option 2',
+                                    correct: false
+                                },
+                                {
+                                    text: 'option 3',
+                                    correct: false
+                                },
+                                {
+                                    text: 'option 4',
+                                    correct: true
+                                }
+                            ]
+                        }
                     ]
                 },
                 {
@@ -168,19 +168,21 @@ var checkout = new Vue({
             // debugger;
         },
         checkAnswerErrors: function () {
-            var q = this.settings.quiz[0].questions[0];
-            var options = q.options;
+
             // console.table(options);
             var _ = this;
             this.user.quiz[0].done = true;
 
-            this.user.quiz[0].answers.forEach(function (answer, index) {
+            this.user.quiz[0].answers.forEach(function (answer, aIndex) {
+
+                var q = _.settings.quiz[0].questions[aIndex];
+                debugger;
+                var options = q.options;
 
                 console.log(options[answer].text + ' is:');
 
                 if (options[answer].correct) {
                     // debugger
-                    console.log('correct ')
                     q.error = false;
                     // return
                 } else {
@@ -209,7 +211,10 @@ var checkout = new Vue({
         quizReset: function () {
             this.user.quiz[0].answers = [];
             this.user.quiz[0].done = false;
-            this.settings.quiz[0].questions[0].error = false;
+            // this.settings.quiz[0].questions[0].error = false;
+            this.settings.quiz[0].questions.forEach(function (q) {
+                q.error = false;
+            })
         },
 
         fetchQuiz: function (level) {
