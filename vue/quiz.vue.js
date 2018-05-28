@@ -3,7 +3,7 @@ Vue.use(VeeValidate);
 var checkout = new Vue({
     el: '#vue-checkout',
     data: {
-        json: false,
+        json: true,
         currentStep: 3,
         loading: false,
         user: {
@@ -20,43 +20,26 @@ var checkout = new Vue({
             terms_agreed: true,
             quiz: [
                 {
+                    id: 0,
+                    status: 'done',
+                    next: false,
+                    // index
+                    answers: []
+                },
+                {
                     id: 1,
-                    status:'done',
-                    next:false,
-                    questions:[]
+                    status: 'todo',
+                    next: true,
+                    answers: [1, 2, 3, 0]
                 },
                 {
                     id: 2,
-                    status:'todo',
-                    next:true,
-                    questions:[]
-                },
-                {
-                    id: 3,
-                    status:'locked',
-                    next:false,
-
+                    status: 'locked',
+                    next: false,
+                    answers: [1, 2, 3, 0]
                 },
             ],
-            store: {
-                store_name: 'password',
-                store_country: 'italy',
-                plan: {
-                    interval: 'monthly',
-                    type: 'digital springboard',
-                },
-                payment: {
-                    method: 'credit card',
-                    card: {
-                        name: 'name on card',
-                        number: '5105105105105100',
-                        cvv: '666',
-                        expiry_month: '12',
-                        expiry_year: '22'
-                    }
-                },
-                // total: ''
-            }
+
         },
         settings: {
             steps: [
@@ -100,28 +83,51 @@ var checkout = new Vue({
                     id: 1,
                     title: 'About',
                     link: 'View',
-                    status:'todo',
-                    questions:[
+                    status: 'todo',
+                    checking: false,
+                    questionsJSON:[],
+                    questions: [
                         {
                             title: 'question title',
-                            options:[
+                            options: [
                                 {
-                                text: 'option 1',
-                                correct: false
-                            },
-                            {
-                                text: 'option 2',
-                                correct: false
-                            },
-                            {
-                                text: 'option 3',
-                                correct: false
-                            },
-                            {
-                                text: 'option 4',
-                                correct: true
-                            }
-                        ]
+                                    text: 'option 1',
+                                    correct: false
+                                },
+                                {
+                                    text: 'option 2',
+                                    correct: false
+                                },
+                                {
+                                    text: 'option 3',
+                                    correct: false
+                                },
+                                {
+                                    text: 'option 4',
+                                    correct: true
+                                }
+                            ]
+                        },
+                        {
+                            title: 'question title 2',
+                            options: [
+                                {
+                                    text: 'option 1',
+                                    correct: false
+                                },
+                                {
+                                    text: 'option 2',
+                                    correct: false
+                                },
+                                {
+                                    text: 'option 3',
+                                    correct: false
+                                },
+                                {
+                                    text: 'option 4',
+                                    correct: true
+                                }
+                            ]
                         }
                     ]
                 },
@@ -129,79 +135,28 @@ var checkout = new Vue({
                     id: 2,
                     title: 'Benefits',
                     link: 'To Do',
-                    status:'todo'
+                    status: 'todo'
                 },
                 {
                     id: 3,
                     title: 'How to Sell',
                     link: 'To Do',
-                    status:'todo'
+                    status: 'todo'
                 },
             ],
-            store: {
-                store_name_valid: false,
-                payments: [
-                    {
-                        method: 'credit card',
-                    },
-                    {
-                        method: 'paypal',
-                    },
-                    {
-                        method: 'stripe',
-                    }
-                ],
-                plan: {
-                    intervals: ['monthly', 'yearly'],
-                    // intervals: [
-                    //     {
-                    //         label: 'monthly',
-                    //         count: 1
-                    //     },
-                    //     {
-                    //         label: 'yearly',
-                    //         count: 12
-                    //     }
-                    // ],
-                    setup: 249,
-                    gst: 10,
-                    types: [
-                        {
-                            name: 'digital springboard',
-                            subtitle: 'first month free!',
-                            fees: {
-                                monthly: '69',
-                                yearly: '62',
-                            },
-                            setup: '249',
-                            gst: '10',
-                        },
-                        {
-                            name: 'customize it',
-                            subtitle: 'first month free!',
-                            fees: {
-                                monthly: '129',
-                                yearly: '116',
-                            },
-                            setup: '249',
-                            gst: '10',
-                        },
-                        {
-                            name: 'everything',
-                            subtitle: 'first month free!',
-                            fees: {
-                                monthly: '199',
-                                yearly: '179',
-                            },
-                            setup: '249',
-                            gst: '10',
-                        }
-                    ]
-                },
-            }
+
         }
     },
     methods: {
+        checkQuiz: function () {
+            this.settings.quiz[0].checking = true;
+            console.log('checking...');
+        },
+        setAnswer: function (what, where) {
+            // console.log(what,where)
+            this.user.quiz[0].answers[where] = what;
+            // debugger;
+        },
         goStep: function (nextStep) {
             // console.log('------------------------------------');
             // console.log(nextStep);
@@ -210,107 +165,67 @@ var checkout = new Vue({
             this.currentStep = nextStep;
             // debugger;
         },
-        checkStoreName: function () {
-            // debugger;
-            var stores_taken = ['store', 'graple'];
-            var _this = this;
-            _this.settings.store.store_name_valid = false;
-            var name_not_taken = stores_taken.indexOf(_this.user.store.store_name) < 1;
 
-            setTimeout(function () {
-                // debugger;
-                if (_this.user.store.store_name.length > 2 && name_not_taken) {
-                    _this.settings.store.store_name_valid = true;
-                }
-            }, 1000 * 3)
-        },
-        // checkCreditCardName: function () {
-        //     // method on blur
-        //     // debugger;
-        //     return this.user.store.payment.card.name.length > 0 && this.user.store.payment.card.name.length < 3
-        // },
-        // checkCreditCardCVV: function () {
-        //     // method on blur
-        //     // debugger;
-        //     return this.user.store.payment.card.cvv.length === 3
-        // },
-        resetCard() {
-            this.user.store.payment.card.number = '';
-            this.user.store.payment.card.cvv = '';
-        },
-        validateBeforeSubmit() {
-            var _this = this;
-            this.$validator.validateAll().then(function (result) {
+        quizCheck: function() {
+            this.$validator.validateAll().then((result) => {
                 if (result) {
-                    // eslint-disable-next-line
-                    console.log('Form ' + _this.currentStep + ' Submitted!');
-                    var next = _this.currentStep += 1;
-                    // _this.settings.steps[_this.currentStep].complete = true;
-                    // debugger;
-                    if (next < 4) {
-                        // debugger;
-                        _this.goStep(next);
-                    } else {
-                        _this.settings.steps.forEach(function (i) {
-                            i.complete = true;
-                            i.clickable = false;
-                        })
-                        _this.loading = true;
-                        setTimeout(function () {
-                            _this.loading = false;
-                            _this.goStep(4);
-                            document.querySelector('[alt="logo"]').setAttribute('src', 'http://cultofthepartyparrot.com/parrots/thumbsupparrot.gif');
-                        }, 4 * 1000)
-                        console.log('------------------------------------');
-                        console.log('last step done');
-                        console.log('------------------------------------');
-                    }
+
+                    console.log('All Checked!');
                     return;
                 }
-
-                // alert('Correct them errors!');
+                console.log('Not completed');
             });
-            // console.log(this.$validator)
+        },
+
+        fetchQuiz: function (level) {
+            var _ = this;
+            fetch('./../quiz/level-'+ level +'.json')
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (quiz) {
+                    // console.table(quiz);
+                    debugger;
+                    _.settings.quiz[level -1].questionsJSON.push(quiz);
+                }).catch(function (err) {
+                    console.log(err);
+                });
         }
+
+
     },
+    created: function () {
+        // console.log('created');
+        // this.fetchQuiz(1);
+        
+    },
+
+    // watch:{
+    //     checkAnswer: function (where) {
+    //         this.user.quiz[0].answers[where];
+    //     }
+    // },
+
     computed: {
 
-        // checkPassword: function () {
-        //     return this.user.password.length > 0 && this.user.password.length < 8
-        // },
-        // checkPasswordConfirm: function () {
-        //     if (
-        //         this.user.password.length > 0
-        //         && this.user.password_confirm.length > 0
-        //         && this.user.password_confirm !== this.user.password
-        //     ) {
-        //         return false
-        //     } else {
-        //         return true
-        //     }
-        // },
-        enableButton: function () {
-            return true
+        allAnswer: function () {
+            var q = this.user.quiz[0].answers;
+            // console.log(this.user.quiz[0].answers)
+
+            // var otherThanNull = q.filter(function (el,i) {
+            //     debugger;
+            //     return el === null;
+            // });
+              
+            //   console.log(otherThanNull);
+
+            // debugger;
+            // console.log(nonulls.length > 0);
+
+            return  q.length == this.settings.quiz[0].questions.length;
         },
-        enablePayButton: function () {
-            return this.user.store.payment.card.number.length == 16 && this.user.store.payment.card.name.length >= 3
-        },
-        getTotal: function () {
-            var interval = this.user.store.plan.interval == 'monthly' ? 1 : 12;
 
-            var user_plan = this.user.store.plan.type;
-            var type = this.settings.store.plan.types.filter(function (i) {
-
-                return i.name == user_plan
-            });
-
-            this.user.store.total = type[0].fees[this.user.store.plan.interval] * interval;
-
-            return this.user.store.total;
-        },
-        // checkCreditCard: function () {
-        //     return this.user.store.payment.card.number.length > 0 && this.user.store.payment.card.number.length < 16
-        // },
 
     }
 })
+

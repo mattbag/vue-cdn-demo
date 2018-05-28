@@ -22,7 +22,8 @@
         [v-cloak] {
             opacity: 0;
         }
-        .lock{
+
+        .lock {
             opacity: .5;
             pointer-events: none;
         }
@@ -114,7 +115,7 @@
                     <div id="vue-checkout" v-cloak>
                         <br>
                         <br>
-                      
+
                         <transition name="step-fade" mode="out-in">
                             <!-- step1 -->
                             <div v-if="currentStep === 1" key="1">
@@ -128,14 +129,14 @@
                                             <div class="form-group py-2 text-center">
                                                 <label class="form-label d-none">Type</label>
                                                 <label class="form-radio">
-                                                  <input type="radio" name="gender" value="store" checked v-model="user.type">
-                                                  <i class="form-icon"></i> Store
+                                                    <input type="radio" name="gender" value="store" checked v-model="user.type">
+                                                    <i class="form-icon"></i> Store
                                                 </label>
                                                 <label class="form-radio">
-                                                  <input type="radio" name="gender" value="individual" v-model="user.type">
-                                                  <i class="form-icon"></i> Individual
+                                                    <input type="radio" name="gender" value="individual" v-model="user.type">
+                                                    <i class="form-icon"></i> Individual
                                                 </label>
-                                              </div>
+                                            </div>
 
                                             <div class="form-group" :class="{'has-error': errors.has('firstName') }">
                                                 <label for="">First Name</label>
@@ -171,22 +172,22 @@
 
                                             <div v-if="user.type == 'store'">
 
-                                            <div class="form-group" :class="{'has-error': errors.has('state') }">
-                                                <label for="">State</label>
-                                                <select class="form-select" name="state" v-validate="'required'" v-model="user.state">
-                                                    <!-- <option value="">Choose</option> -->
-                                                    <option :value="c" v-for="c in settings.states" :selected="user.state">{{c}}</option>
-                                                </select>
-                                                <span class="text-error" v-show="errors.has('state')" style="display: none">
-                                                    <br>{{ errors.first('state') }}</span>
-                                            </div>
-                                            <br>
-                                            <div class="form-group" :class="{'has-error': errors.has('branchName') }">
-                                                <label for="">Branch Name</label>
-                                                <input class="form-input" type="text" name="branchName" v-model="user.branchName" v-validate="'required|alpha_spaces|min:3'">
-                                                <span v-show="errors.has('branchName')" class="text-error" style="display:none">{{ errors.first('branchName') }}</span>
-                                            </div>
-                                            <br>
+                                                <div class="form-group" :class="{'has-error': errors.has('state') }">
+                                                    <label for="">State</label>
+                                                    <select class="form-select" name="state" v-validate="'required'" v-model="user.state">
+                                                        <!-- <option value="">Choose</option> -->
+                                                        <option :value="c" v-for="c in settings.states" :selected="user.state">{{c}}</option>
+                                                    </select>
+                                                    <span class="text-error" v-show="errors.has('state')" style="display: none">
+                                                        <br>{{ errors.first('state') }}</span>
+                                                </div>
+                                                <br>
+                                                <div class="form-group" :class="{'has-error': errors.has('branchName') }">
+                                                    <label for="">Branch Name</label>
+                                                    <input class="form-input" type="text" name="branchName" v-model="user.branchName" v-validate="'required|alpha_spaces|min:3'">
+                                                    <span v-show="errors.has('branchName')" class="text-error" style="display:none">{{ errors.first('branchName') }}</span>
+                                                </div>
+                                                <br>
 
                                             </div>
                                             <div v-else>
@@ -213,17 +214,17 @@
                                                 <span class="form-input-hint" v-show="errors.has('password_confirm')" style="display:none">Passwords must match.</span>
                                             </div>
                                             <br>
-                                            
-                                           
-                                          <div class="text-center">
-                                              
-                                              <div class="popover popover-top">
-                                                  
-                                                  <button type="submit" :disabled="errors.items.length > 0" class="btn btn-primary">Create</button>
-                                                  
-                                                  <div class="popover-container bg-warning" style="padding:.25rem" v-show="errors.items.length > 0">
-                                                      <ul>
-                                                          <li v-for="err in errors.items">{{err.msg}}</li>
+
+
+                                            <div class="text-center">
+
+                                                <div class="popover popover-top">
+
+                                                    <button type="submit" :disabled="errors.items.length > 0" class="btn btn-primary">Create</button>
+
+                                                    <div class="popover-container bg-warning" style="padding:.25rem" v-show="errors.items.length > 0">
+                                                        <ul>
+                                                            <li v-for="err in errors.items">{{err.msg}}</li>
                                                         </ul>
                                                         <!-- <code>
                                                             {{errors}}
@@ -238,25 +239,30 @@
                                 </form>
                             </div>
 
-                         
+
                             <!-- end step 1 -->
 
-                        
+
                             <div v-if="currentStep === 2" key="2">
-                               <h2>Welcome {{user.firstName}}</h2>
-                               <hr>
-                               <div class="columns">
+                                <h2>Welcome {{user.firstName}}</h2>
+                                <hr>
+                                <div class="columns">
 
-                                   <div class="column col-xs-12 col-4" v-for="q in settings.quiz">
-                                       <div class="text-center c-hand p-2" :class="user.quiz[q.id -1].status == 'locked' ? 'lock' : ''" style="border: 1px solid orange" :style="user.quiz[q.id -1].next ? 'border-width: 4px' : ''">
-                                           <h3 class="text-warning">{{q.id}}</h3>
-                                           <h3>{{q.title}}</h3>
+                                    <div class="column col-xs-12 col-4" v-for="q in settings.quiz">
+                                        <div class="text-center c-hand p-2" :class="user.quiz[q.id -1].status == 'locked' ? 'lock' : ''" style="border: 1px solid orange"
+                                            :style="user.quiz[q.id -1].next ? 'border-width: 4px' : ''">
+                                            <h3 class="text-warning">{{q.id}}</h3>
+                                            <h3>{{q.title}}</h3>
 
-                                           <!-- <a href="">{{q.link}}</a> -->
-                                           <a v-if="user.quiz[q.id -1].status == 'done'"><u>View</u></a>
-                                           <a v-else><u>To Do</u></a>
-                                       </div>
-                                   </div>
+                                            <!-- <a href="">{{q.link}}</a> -->
+                                            <a v-if="user.quiz[q.id -1].status == 'done'">
+                                                <u>View</u>
+                                            </a>
+                                            <a v-else>
+                                                <u>To Do</u>
+                                            </a>
+                                        </div>
+                                    </div>
 
                                 </div>
                             </div>
@@ -266,37 +272,35 @@
                             <div v-if="currentStep === 3" key="3">
                                 <h2>Quiz title</h2>
                                 <br>
-                               
-                                <div class="form-group" v-for="q in settings.quiz[0].questions">
-                                    <label class="form-label">
-                                        <h3>{{q.title}}</h3>
-                                    </label>
+                                <!-- start questions -->
 
-                                    <label class="form-radio" v-for="o in q.options">
-                                        <input type="radio" @change="" :name="o.text" :value="o.correct">
-                                        <i class="form-icon"></i> {{o.text}}
+                                <form @submit.prevent="">
+
+                                <div class="form-group" v-for="(q,qIndex) in settings.quiz[0].questions">
+                                    <label class="form-label">
+                                        <h4>{{qIndex + 1}}. {{q.title}}</h4>
+                                        <p>i: {{qIndex}} - a: {{ user.quiz[0].answers[qIndex] }}</p>
                                     </label>
+                                    <div v-for="(o,index) in q.options">
+                                        <label class="form-radio">
+                                            <input type="radio" v-validate="'required'" :name="q.title" v-model="user.quiz[0].answers[qIndex]" :value="index" @change="setAnswer(index,qIndex)">
+                                            <i class="form-icon"></i> {{o.text}}
+                                        </label>
+                                        <br>
+                                    </div>
+                                    <span class="help text-error" v-show="errors.has(q.title)">{{ errors.first(q.title) }}</span>
                                     <br>
                                 </div>
+                                <!-- end questions -->
+                                <button class="btn btn-success" :disabled="!allAnswer" @click="quizCheck">Submit</button>
 
+                                <!-- <p v-if="allAnswer">true</p> -->
+                                </form>
                             </div>
                             <!-- end step 3 -->
 
 
-                            <!-- step 4 -->
-                            <div v-if="currentStep === 4" key="4">
-                                <div class="empty" v-if="currentStep == 4 && !loading">
-                                    <div class="empty-icon">
-                                        <i class="icon icon-4x icon-check text-success"></i>
-                                    </div>
-                                    <p class="empty-title h5">Your store has been created!</p>
-                                    <p class="empty-subtitle">Click the button and start managing.</p>
-                                    <div class="empty-action">
-                                        <a :href="'https://' + user.store.store_name + '.vuestore.io'" class="btn btn-primary btn-lg">Go to your store</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end step 4 -->
+                         
 
                         </transition>
 
@@ -336,6 +340,7 @@
     <script src="https://unpkg.com/vee-validate@latest"></script>
 
     <script src="./vue/quiz.vue.js"></script>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,Promise"></script>
 </body>
 
 </html>
