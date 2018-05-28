@@ -30,13 +30,13 @@ var checkout = new Vue({
                     id: 1,
                     status: 'todo',
                     next: true,
-                    answers: [1, 2, 3, 0]
+                    // answers: [1, 2, 3, 0]
                 },
                 {
                     id: 2,
                     status: 'locked',
                     next: false,
-                    answers: [1, 2, 3, 0]
+                    // answers: [1, 2, 3, 0]
                 },
             ],
 
@@ -85,10 +85,12 @@ var checkout = new Vue({
                     link: 'View',
                     status: 'todo',
                     checking: false,
-                    questionsJSON:[],
+                    done: false,
+                    questionsJSON: [],
                     questions: [
                         {
-                            title: 'question title',
+                            title: 'question title 1',
+                            error: false,
                             options: [
                                 {
                                     text: 'option 1',
@@ -100,35 +102,35 @@ var checkout = new Vue({
                                 },
                                 {
                                     text: 'option 3',
-                                    correct: false
+                                    correct: true
                                 },
                                 {
                                     text: 'option 4',
-                                    correct: true
+                                    correct: false
                                 }
                             ]
                         },
-                        {
-                            title: 'question title 2',
-                            options: [
-                                {
-                                    text: 'option 1',
-                                    correct: false
-                                },
-                                {
-                                    text: 'option 2',
-                                    correct: false
-                                },
-                                {
-                                    text: 'option 3',
-                                    correct: false
-                                },
-                                {
-                                    text: 'option 4',
-                                    correct: true
-                                }
-                            ]
-                        }
+                        // {
+                        //     title: 'question title 2',
+                        //     options: [
+                        //         {
+                        //             text: 'option 1',
+                        //             correct: false
+                        //         },
+                        //         {
+                        //             text: 'option 2',
+                        //             correct: false
+                        //         },
+                        //         {
+                        //             text: 'option 3',
+                        //             correct: false
+                        //         },
+                        //         {
+                        //             text: 'option 4',
+                        //             correct: true
+                        //         }
+                        //     ]
+                        // }
                     ]
                 },
                 {
@@ -165,28 +167,61 @@ var checkout = new Vue({
             this.currentStep = nextStep;
             // debugger;
         },
+        checkAnswerErrors: function () {
+            var q = this.settings.quiz[0].questions[0];
+            var options = q.options;
+            // console.table(options);
+            var _ = this;
+            this.user.quiz[0].done = true;
 
-        quizCheck: function() {
+            this.user.quiz[0].answers.forEach(function (answer, index) {
+
+                console.log(options[answer].text + ' is:');
+
+                if (options[answer].correct) {
+                    // debugger
+                    console.log('correct ')
+                    q.error = false;
+                    // return
+                } else {
+                    // debugger
+                    console.log('wrong at index: ' + answer);
+                    q.error = true;
+                    // console.log(q.error);
+                }
+
+
+            });
+        },
+
+        quizCheck: function () {
             this.$validator.validateAll().then((result) => {
                 if (result) {
 
-                    console.log('All Checked!');
+                    console.log('All check -> Check errors');
+                    this.checkAnswerErrors();
                     return;
                 }
                 console.log('Not completed');
             });
         },
 
+        quizReset: function () {
+            this.user.quiz[0].answers = [];
+            this.user.quiz[0].done = false;
+            this.settings.quiz[0].questions[0].error = false;
+        },
+
         fetchQuiz: function (level) {
             var _ = this;
-            fetch('./../quiz/level-'+ level +'.json')
+            fetch('./../quiz/level-' + level + '.json')
                 .then(function (response) {
                     return response.json();
                 })
                 .then(function (quiz) {
                     // console.table(quiz);
                     debugger;
-                    _.settings.quiz[level -1].questionsJSON.push(quiz);
+                    _.settings.quiz[level - 1].questionsJSON.push(quiz);
                 }).catch(function (err) {
                     console.log(err);
                 });
@@ -197,7 +232,7 @@ var checkout = new Vue({
     created: function () {
         // console.log('created');
         // this.fetchQuiz(1);
-        
+
     },
 
     // watch:{
@@ -216,13 +251,13 @@ var checkout = new Vue({
             //     debugger;
             //     return el === null;
             // });
-              
+
             //   console.log(otherThanNull);
 
             // debugger;
             // console.log(nonulls.length > 0);
 
-            return  q.length == this.settings.quiz[0].questions.length;
+            return q.length == this.settings.quiz[0].questions.length;
         },
 
 

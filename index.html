@@ -11,62 +11,7 @@
     <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
     <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
     <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
-
-    <style>
-        body {
-            min-height: 100vh;
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-        }
-
-        [v-cloak] {
-            opacity: 0;
-        }
-
-        .lock {
-            opacity: .5;
-            pointer-events: none;
-        }
-
-        .step-fade-enter-active,
-        .step-fade-leave-active {
-            transition: opacity 300ms ease-out;
-        }
-
-        .step-fade-enter,
-        .step-fade-leave-to {
-            opacity: 0;
-            /* display: none; */
-        }
-
-        .bounce-enter-active {
-            transform-origin: bottom right;
-            animation: bounce-in 300ms;
-        }
-
-        .bounce-leave-active {
-            transform-origin: bottom right;
-            animation: bounce-in 300ms reverse;
-        }
-
-        @keyframes bounce-in {
-            0% {
-                transform: scale(0);
-            }
-            50% {
-                transform: scale(1.3);
-            }
-            55% {
-                transform: scale(1.2);
-            }
-            60% {
-                transform: scale(1.3);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./css/quiz.css">
 </head>
 
 <body>
@@ -270,29 +215,33 @@
                             <!-- step 3 -->
 
                             <div v-if="currentStep === 3" key="3">
-                                <h2>Quiz title</h2>
+                                <h2>Quiz title <u>{{user.quiz[0].done ? 'done': 'not done'}}</u></h2>
                                 <br>
                                 <!-- start questions -->
 
                                 <form @submit.prevent="">
 
-                                <div class="form-group" v-for="(q,qIndex) in settings.quiz[0].questions">
+                                <div class="form-group" v-for="(q,qIndex) in settings.quiz[0].questions" :class="settings.quiz[0].questions[qIndex].error ? 'has-error has-error-border': ''">
                                     <label class="form-label">
                                         <h4>{{qIndex + 1}}. {{q.title}}</h4>
                                         <p>i: {{qIndex}} - a: {{ user.quiz[0].answers[qIndex] }}</p>
                                     </label>
                                     <div v-for="(o,index) in q.options">
-                                        <label class="form-radio">
+                                        <label class="form-radio" :style="o.correct ? 'border: 1px solid green':''">
                                             <input type="radio" v-validate="'required'" :name="q.title" v-model="user.quiz[0].answers[qIndex]" :value="index" @change="setAnswer(index,qIndex)">
                                             <i class="form-icon"></i> {{o.text}}
                                         </label>
+                                        <!-- <hr v-if="o.correct"> -->
                                         <br>
                                     </div>
                                     <span class="help text-error" v-show="errors.has(q.title)">{{ errors.first(q.title) }}</span>
                                     <br>
                                 </div>
                                 <!-- end questions -->
-                                <button class="btn btn-success" :disabled="!allAnswer" @click="quizCheck">Submit</button>
+                                <button v-if="!user.quiz[0].done" class="btn btn-success" :disabled="!allAnswer" @click="quizCheck">Submit</button>
+
+                                <button v-if="user.quiz[0].done" class="btn btn-secondary" @click="quizReset">Re-take the quiz</button>
+                                <button v-if="user.quiz[0].done" class="btn btn-warning" @click="">Move on</button>
 
                                 <!-- <p v-if="allAnswer">true</p> -->
                                 </form>
