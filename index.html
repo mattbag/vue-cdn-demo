@@ -62,7 +62,7 @@
                         <br>
 
                         <transition name="step-fade" mode="out-in">
-                            <!-- step1 -->
+                            <!-- step1 register/signup -->
                             <div v-if="currentStep === 1" key="1">
                                 <div class="text-center">
                                     <a href="#" @click.prevent="">or sign in</a>
@@ -187,32 +187,29 @@
 
                             <!-- end step 1 -->
 
-
+                        <!-- step 2 choose quiz -->
                             <div v-if="currentStep === 2" key="2">
                                 <h2>Welcome {{user.firstName}}</h2>
                                 <hr>
                                 <div class="columns">
 
-                                    <div class="column col-xs-12 col-4" v-for="q in settings.quiz">
-                                        <div class="text-center c-hand p-2" :class="user.quiz[q.id -1].status == 'locked' ? 'lock' : ''" style="border: 1px solid orange"
+                                    <div class="column col-xs-12 col-4" v-for="(q,i) in settings.quiz">
+                                        <div @click="openQuiz(i,q)" class="text-center c-hand p-2" :class="user.quiz[q.id -1].status == 'locked' ? 'lock' : ''" style="border: 1px solid orange"
                                             :style="user.quiz[q.id -1].next ? 'border-width: 4px' : ''">
                                             <h3 class="text-warning">{{q.id}}</h3>
                                             <h3>{{q.title}}</h3>
 
                                             <!-- <a href="">{{q.link}}</a> -->
-                                            <a v-if="user.quiz[q.id -1].status == 'done'">
-                                                <u>View</u>
-                                            </a>
-                                            <a v-else>
-                                                <u>To Do</u>
-                                            </a>
+
+                                                <u>{{user.quiz[q.id -1].status == 'done' ? 'View':'To Do'}}</u>
+
                                         </div>
                                     </div>
 
                                 </div>
                             </div>
 
-                            <!-- step 3 -->
+                            <!-- step 3 quiz -->
 
                             <div v-if="currentStep === 3" key="3">
                                 <h2>Quiz title <u v-show="json">{{user.quiz[0].done ? 'done': 'not done'}}</u></h2>
@@ -221,6 +218,7 @@
 
                                 <form @submit.prevent="">
 
+<!-- question loop -->
                                 <div class="form-group" v-for="(q,qIndex) in settings.quiz[0].questions" :class="settings.quiz[0].questions[qIndex].error ? 'has-error has-error-border': ''">
                                     <label class="form-label">
                                         <h4>{{qIndex + 1}}. {{q.title}}</h4>
@@ -234,14 +232,14 @@
                                         <!-- <hr v-if="o.correct"> -->
                                         <br>
                                     </div>
-                                    <span class="help text-error" v-show="errors.has(q.title)">{{ errors.first(q.title) }}</span>
+                                    <span class="help text-error" v-show="errors.has(q.title)">Please provide an answer</span>
                                     <br>
                                 </div>
                                 <!-- end questions -->
                                 <button v-if="!user.quiz[0].done" class="btn btn-success" :disabled="!allAnswer" @click="quizCheck">Submit</button>
 
                                 <button v-if="user.quiz[0].done" class="btn btn-secondary" @click="quizReset">Re-take the quiz</button>
-                                <button v-if="user.quiz[0].done" class="btn btn-warning" @click="">Move on</button>
+                                <button v-if="user.quiz[0].done" class="btn btn-warning" @click="goStep(2)">Move on</button>
 
                                 </form>
                             </div>
@@ -253,12 +251,12 @@
                         <transition name="bounce">
                             <div v-show="json" style="z-index:99;position: absolute; bottom:.2rem;right:.2rem; opacity:0.8">
                                     <input type="text" :value="debugItem" v-model.lazy="debugItem"/>
-                                <pre class="code" data-lang="JSON"><code>item: {{debugItemComp}}</code></pre>
+                                <pre class="code" data-lang="JSON"><code :style="json ? 'height:90vh':''">item: {{debugItemComp}}</code></pre>
                             </div>
                         </transition>
                         
 
-                        <figure class="avatar avatar-lg c-hand" @click="json = !json" data-initial="JSON" style="z-index:99;font-size:.7rem;background-color: #5755d9;position: absolute; bottom:.5rem;right:.5rem;">
+                        <figure class="avatar avatar-lg c-hand" @click="json = !json" data-initial="debug" style="z-index:99;font-size:.7rem;background-color: #5755d9;position: absolute; bottom:.5rem;right:.5rem;">
                             <i class="avatar-presence online" :class="json ? 'online': 'busy'"></i>
                         </figure>
                     </div>

@@ -4,9 +4,8 @@ var checkout = new Vue({
     el: '#vue-quiz',
     data: {
         json: true,
-        debug: true,
         debugItem: '',
-        currentStep: 3,
+        currentStep: 2,
         loading: false,
         user: {
             firstName: 'first name',
@@ -59,16 +58,10 @@ var checkout = new Vue({
                 },
                 {
                     order: 3,
-                    name: 'Payment',
+                    name: 'Quiz',
                     complete: false,
                     clickable: true,
-                },
-                {
-                    order: 4,
-                    name: 'Done!',
-                    complete: false,
-                    clickable: false,
-                },
+                }
             ],
             states: [
                 'NSW',
@@ -165,7 +158,7 @@ var checkout = new Vue({
             // console.log('------------------------------------');
             // console.log(nextStep);
             // console.log('------------------------------------');
-            this.settings.steps[nextStep - 2].complete = true;
+            // this.settings.steps[nextStep - 2].complete = true;
             this.currentStep = nextStep;
             // debugger;
         },
@@ -233,7 +226,26 @@ var checkout = new Vue({
                 }).catch(function (err) {
                     console.log(err);
                 });
-        }
+        },
+
+        openQuiz:function(index,quiz){
+            // debugger;
+            this.goStep(this.currentStep+1);
+        },
+
+        validateBeforeSubmit:function() {
+            var _ = this;
+            this.$validator.validateAll().then(function(result) {
+              if (result) {
+                // eslint-disable-next-line
+                console.log('Form Submitted!');
+                _.goStep(_.currentStep+1);
+                return;
+              }
+      
+              console.log('Correct them errors!');
+            });
+          }
 
 
     },
@@ -272,7 +284,14 @@ var checkout = new Vue({
             if( this.debugItem){
                 return this[this.debugItem]
             }
-        }
+        },
+        selectedDebug() {
+            if (! this.selector) {
+              return 'You did not select any data';
+            }
+    
+            return this.errors.first(this.selector) || 'None Found';
+          }
 
 
     },
