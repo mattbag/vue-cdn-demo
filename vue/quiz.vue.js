@@ -3,9 +3,9 @@ Vue.use(VeeValidate);
 var checkout = new Vue({
     el: '#vue-quiz',
     data: {
-        json: true,
+        json: false,
         debugItem: '',
-        currentStep: 2,
+        currentStep: 1,
         loading: false,
         user: {
             firstName: 'first name',
@@ -287,15 +287,7 @@ var checkout = new Vue({
             if( this.debugItem){
                 return this[this.debugItem]
             }
-        },
-        selectedDebug() {
-            if (! this.selector) {
-              return 'You did not select any data';
-            }
-    
-            return this.errors.first(this.selector) || 'None Found';
-          }
-
+        }
 
     },
     // directives: {

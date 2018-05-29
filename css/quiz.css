@@ -1,4 +1,4 @@
-body {
+.wrap {
     min-height: 100vh;
     display: grid;
     grid-template-rows: auto 1fr auto;
@@ -51,7 +51,17 @@ body {
         transform: scale(1);
     }
 }
-.has-error-border{
+
+.has-error-border {
     border-left: 3px solid red;
     padding-left: .5rem;
+}
+
+.dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+}
+
+.dropdown-toggle [data-icon] {
+    width: 1.5rem;
 }

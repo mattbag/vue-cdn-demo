@@ -9,40 +9,59 @@
     <link rel="icon" href="http://cultofthepartyparrot.com/parrots/hd/parrotmustache.gif" type="image/gif">
 
     <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css"> -->
     <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
     <link rel="stylesheet" href="./css/quiz.css">
 </head>
 
 <body>
+    <div class="wrap" id="vue-quiz" v-cloak>
+
     <div class="bg-dark" style="padding: .25rem;">
         <div class="container">
 
             <header class="navbar">
-                <section class="navbar-section">
-                    <div class="columns">
+                <section class="navbar-section" v-if="currentStep < 2">
+                    <!-- <div class="columns" v-if="currentStep >= 2">
                         <div class="column">
                             <a href="#" class="text-secondary">Docs</a>
                         </div>
                         <div class="column">
                             <a href="#" class="text-secondary">Examples</a>
                         </div>
-                    </div>
+                    </div> -->
                 </section>
-                <section class="navbar-center">
+                <section :class="currentStep >= 2 ? 'navbar-section' : 'navbar-center'">
                     <a href="index.html" style="padding: .3rem .2rem 0 .2rem">
-                        <!-- <img src="./img/logo.png" alt="logo" width="50"> -->
-                        <img src="http://cultofthepartyparrot.com/parrots/hd/parrotmustache.gif" alt="logo" width="50">
+                        <img src="http://cultofthepartyparrot.com/parrots/hd/parrotmustache.gif" alt="logo" width="40">
                     </a>
+                     <div class="columns" v-if="currentStep >= 2">
+                        <div class="column">
+                            <a href="#" class="text-secondary">Docs</a>
+                        </div>
+                        <div class="column">
+                            <a href="#" class="text-secondary">Examples</a>
+                        </div>
+                    </div> 
                 </section>
                 <section class="navbar-section">
                     <div class="columns">
-                        <div class="column">
-                            <a href="#" class="text-secondary">Twitter</a>
+                        
+                        <div v-if="currentStep >= 2" class="column">
+                            <!-- basic dropdown button -->
+                            <div class="dropdown dropdown-right">
+                                <a href="#" class="text-secondary dropdown-toggle" tabindex="0">
+                                        <svg aria-hidden="true" data-prefix="fas" data-icon="user-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="svg-inline--fa fa-user-circle fa-w-16 fa-3x"><path fill="currentColor" d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 96c48.6 0 88 39.4 88 88s-39.4 88-88 88-88-39.4-88-88 39.4-88 88-88zm0 344c-58.7 0-111.3-26.6-146.5-68.2 18.8-35.4 55.6-59.8 98.5-59.8 2.4 0 4.8.4 7.1 1.1 13 4.2 26.6 6.9 40.9 6.9 14.3 0 28-2.7 40.9-6.9 2.3-.7 4.7-1.1 7.1-1.1 42.9 0 79.7 24.4 98.5 59.8C359.3 421.4 306.7 448 248 448z" class=""></path></svg>
+                                    <i class="icon icon-caret"></i>
+                                </a>
+                                <!-- menu component -->
+                                <ul class="menu text-primary">
+                                    <li class="menu-item"><a href="">Profile</a></li>
+                                    <li class="menu-item"><a href="">Log Out</a></li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="column">
-                            <a href="#" class="text-secondary">GitHub</a>
-                        </div>
+
                     </div>
                 </section>
             </header>
@@ -57,7 +76,7 @@
             <div class="columns">
                 <div class="column">
                     <!-- start vue -->
-                    <div id="vue-quiz" v-cloak>
+                    <div>
                         <br>
                         <br>
 
@@ -187,7 +206,7 @@
 
                             <!-- end step 1 -->
 
-                        <!-- step 2 choose quiz -->
+                            <!-- step 2 choose quiz -->
                             <div v-if="currentStep === 2" key="step_2">
                                 <h2>Welcome {{user.firstName}}</h2>
                                 <hr>
@@ -201,7 +220,7 @@
 
                                             <!-- <a href="">{{q.link}}</a> -->
 
-                                                <u>{{user.quiz[q.id -1].status == 'done' ? 'View':'To Do'}}</u>
+                                            <u>{{user.quiz[q.id -1].status == 'done' ? 'View':'To Do'}}</u>
 
                                         </div>
                                     </div>
@@ -211,19 +230,21 @@
 
                             <!-- step 3 quiz -->
                             <div v-if="currentStep === 3" key="step_3">
-                                    <h2>Title</h2>
-                                    <hr>
-                                    <br>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat exercitationem recusandae ratione aliquid ullam. Velit minima quod iure amet porro soluta nostrum, veniam illum modi ut deserunt eaque sunt ab.</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
-                                    <h3>Subheading</h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
+                                <h2>Title</h2>
+                                <hr>
+                                <br>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat exercitationem recusandae
+                                    ratione aliquid ullam. Velit minima quod iure amet porro soluta nostrum, veniam illum
+                                    modi ut deserunt eaque sunt ab.</p>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
+                                <h3>Subheading</h3>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
 
-                                    <br>
-                                    <button @click="goStep(4)" class="btn bg-warning">Quiz</button>
+                                <br>
+                                <button @click="goStep(4)" class="btn bg-warning">Quiz</button>
 
 
                             </div>
@@ -231,37 +252,39 @@
                             <!-- step 4 quiz -->
 
                             <div v-if="currentStep === 4" key="step_4">
-                                <h2>Quiz title <u v-show="json">{{user.quiz[0].done ? 'done': 'not done'}}</u></h2>
+                                <h2>Quiz title
+                                    <u v-show="json">{{user.quiz[0].done ? 'done': 'not done'}}</u>
+                                </h2>
                                 <hr>
                                 <br>
                                 <!-- start questions -->
 
                                 <form @submit.prevent="">
 
-<!-- question loop -->
-                                <div class="form-group" v-for="(q,qIndex) in settings.quiz[0].questions" :class="settings.quiz[0].questions[qIndex].error ? 'has-error has-error-border': ''">
-                                    <label class="form-label">
-                                        <h4>{{qIndex + 1}}. {{q.title}}</h4>
-                                        <p v-if="json">i: {{qIndex}} - a: {{ user.quiz[0].answers[qIndex] }}</p>
-                                    </label>
-                                    <div v-for="(o,index) in q.options">
-                                        <label class="form-radio" :style="o.correct && json ? 'border: 1px solid green':''">
-                                            <input type="radio" v-validate="'required'" :name="q.title" v-model="user.quiz[0].answers[qIndex]" :value="index" @change="setAnswer(index,qIndex)">
-                                            <i class="form-icon"></i> {{o.text}}
+                                    <!-- question loop -->
+                                    <div class="form-group" v-for="(q,qIndex) in settings.quiz[0].questions" :class="settings.quiz[0].questions[qIndex].error ? 'has-error has-error-border': ''">
+                                        <label class="form-label">
+                                            <h4>{{qIndex + 1}}. {{q.title}}</h4>
+                                            <p v-if="json">i: {{qIndex}} - a: {{ user.quiz[0].answers[qIndex] }}</p>
                                         </label>
-                                        <!-- <hr v-if="o.correct"> -->
+                                        <div v-for="(o,index) in q.options">
+                                            <label class="form-radio" :style="o.correct && json ? 'border: 1px solid green':''">
+                                                <input type="radio" v-validate="'required'" :name="q.title" v-model="user.quiz[0].answers[qIndex]" :value="index" @change="setAnswer(index,qIndex)">
+                                                <i class="form-icon"></i> {{o.text}}
+                                            </label>
+                                            <!-- <hr v-if="o.correct"> -->
+                                            <br>
+                                        </div>
+                                        <span class="help text-error" v-show="errors.has(q.title)">Please provide an answer</span>
+                                        <span class="help text-error" v-if="settings.quiz[0].questions[qIndex].error">question explanation</span>
                                         <br>
                                     </div>
-                                    <span class="help text-error" v-show="errors.has(q.title)">Please provide an answer</span>
-                                    <span class="help text-error" v-if="settings.quiz[0].questions[qIndex].error">question explanation</span>
+                                    <!-- end questions -->
                                     <br>
-                                </div>
-                                <!-- end questions -->
-                                <br>
-                                <button v-if="!user.quiz[0].done" class="btn btn-success" :disabled="!allAnswer" @click="quizCheck">Submit</button>
+                                    <button v-if="!user.quiz[0].done" class="btn btn-success" :disabled="!allAnswer" @click="quizCheck">Submit</button>
 
-                                <button v-if="user.quiz[0].done" class="btn bg-secondary" @click="quizReset">Re-take the quiz</button>
-                                <button v-if="user.quiz[0].done" class="btn bg-warning" @click="goStep(2)">Move on</button>
+                                    <button v-if="user.quiz[0].done" class="btn bg-secondary" @click="quizReset">Re-take the quiz</button>
+                                    <button v-if="user.quiz[0].done" class="btn bg-warning" @click="goStep(2)">Move on</button>
 
                                 </form>
                             </div>
@@ -272,11 +295,11 @@
 
                         <transition name="bounce">
                             <div v-show="json" style="z-index:99;position: absolute; bottom:.2rem;right:.2rem; opacity:0.8">
-                                    <input type="text" :value="debugItem" v-model.lazy="debugItem"/>
-                                <pre class="code" data-lang="JSON"><code :style="json ? 'height:90vh':''">item: {{debugItemComp}}</code></pre>
+                                <input type="text" :value="debugItem" v-model.lazy="debugItem" />
+                                <pre class="code" data-lang="JSON"><code :style="json ? 'height:90vh':''">{{debugItem}}: {{debugItemComp}}</code></pre>
                             </div>
                         </transition>
-                        
+
 
                         <figure class="avatar avatar-lg c-hand" @click="json = !json" data-initial="debug" style="z-index:99;font-size:.7rem;background-color: #5755d9;position: absolute; bottom:.5rem;right:.5rem;">
                             <i class="avatar-presence online" :class="json ? 'online': 'busy'"></i>
@@ -291,7 +314,7 @@
     <footer class="bg-dark" style="padding:1rem">
         <a href="" class="text-secondary">vuestore.io</a>
     </footer>
-
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://unpkg.com/vee-validate@latest"></script>
 
