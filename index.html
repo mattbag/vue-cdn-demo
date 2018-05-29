@@ -63,7 +63,7 @@
 
                         <transition name="step-fade" mode="out-in">
                             <!-- step1 register/signup -->
-                            <div v-if="currentStep === 1" key="1">
+                            <div v-if="currentStep === 1" key="step_1">
                                 <div class="text-center">
                                     <a href="#" @click.prevent="">or sign in</a>
                                 </div>
@@ -188,7 +188,7 @@
                             <!-- end step 1 -->
 
                         <!-- step 2 choose quiz -->
-                            <div v-if="currentStep === 2" key="2">
+                            <div v-if="currentStep === 2" key="step_2">
                                 <h2>Welcome {{user.firstName}}</h2>
                                 <hr>
                                 <div class="columns">
@@ -210,9 +210,29 @@
                             </div>
 
                             <!-- step 3 quiz -->
+                            <div v-if="currentStep === 3" key="step_3">
+                                    <h2>Title</h2>
+                                    <hr>
+                                    <br>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
+                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat exercitationem recusandae ratione aliquid ullam. Velit minima quod iure amet porro soluta nostrum, veniam illum modi ut deserunt eaque sunt ab.</p>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
+                                    <h3>Subheading</h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, neque.</p>
 
-                            <div v-if="currentStep === 3" key="3">
+                                    <br>
+                                    <button @click="goStep(4)" class="btn bg-warning">Quiz</button>
+
+
+                            </div>
+
+                            <!-- step 4 quiz -->
+
+                            <div v-if="currentStep === 4" key="step_4">
                                 <h2>Quiz title <u v-show="json">{{user.quiz[0].done ? 'done': 'not done'}}</u></h2>
+                                <hr>
                                 <br>
                                 <!-- start questions -->
 
@@ -233,13 +253,15 @@
                                         <br>
                                     </div>
                                     <span class="help text-error" v-show="errors.has(q.title)">Please provide an answer</span>
+                                    <span class="help text-error" v-if="settings.quiz[0].questions[qIndex].error">question explanation</span>
                                     <br>
                                 </div>
                                 <!-- end questions -->
+                                <br>
                                 <button v-if="!user.quiz[0].done" class="btn btn-success" :disabled="!allAnswer" @click="quizCheck">Submit</button>
 
-                                <button v-if="user.quiz[0].done" class="btn btn-secondary" @click="quizReset">Re-take the quiz</button>
-                                <button v-if="user.quiz[0].done" class="btn btn-warning" @click="goStep(2)">Move on</button>
+                                <button v-if="user.quiz[0].done" class="btn bg-secondary" @click="quizReset">Re-take the quiz</button>
+                                <button v-if="user.quiz[0].done" class="btn bg-warning" @click="goStep(2)">Move on</button>
 
                                 </form>
                             </div>

@@ -48,19 +48,21 @@ var checkout = new Vue({
                     order: 1,
                     name: 'Register',
                     complete: false,
-                    clickable: false,
                 },
                 {
                     order: 2,
                     name: 'Welcome',
                     complete: false,
-                    clickable: true,
                 },
                 {
                     order: 3,
+                    name: 'Tutorial',
+                    complete: false,
+                },
+                {
+                    order: 4,
                     name: 'Quiz',
                     complete: false,
-                    clickable: true,
                 }
             ],
             states: [
@@ -86,6 +88,7 @@ var checkout = new Vue({
                         {
                             title: 'question title 1',
                             error: false,
+                            explanation:"lorem explanation ipsum",
                             options: [
                                 {
                                     text: 'option 11',
